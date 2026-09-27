@@ -1,25 +1,73 @@
-# CakePHP 3
+# =========================
+# Python
+# =========================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.pdb
+*.pkl
+*.pyo
+*.pyd
 
-/vendor/*
-/config/app.php
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
 
-/tmp/cache/models/*
-!/tmp/cache/models/empty
-/tmp/cache/persistent/*
-!/tmp/cache/persistent/empty
-/tmp/cache/views/*
-!/tmp/cache/views/empty
-/tmp/sessions/*
-!/tmp/sessions/empty
-/tmp/tests/*
-!/tmp/tests/empty
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
 
-/logs/*
-!/logs/empty
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
 
-# CakePHP 2
+# Unit test / coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+pytest_cache/
+.pytest_cache/
+nosetests.xml
+coverage.xml
 
-/app/tmp/*
-/app/Config/core.php
-/app/Config/database.php
-/vendors/*
+# Jupyter
+.ipynb_checkpoints
+
+# =========================
+# VS Code
+# =========================
+.vscode/
+.history/
+
+# =========================
+# OS / Editor junk
+# =========================
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# =========================
+# Flask / Cloud Run
+# =========================
+instance/
+*.db
+*.sqlite
+*.sqlite3
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/

@@ -38,55 +38,107 @@ WEATHER_CODES = {
 #==================HOMEPAGE=======================================
 @app.route("/")
 def home():
-    return """
-    <html>
-        <head>
-            <title>Google Cloud Run service running a Flask Python web server</title>
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-        </head>
-        <body>
-            <h1>Cloud Run service running a Flask Python web server</h1>
+    return """<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Python Flask on Cloud Run</title>
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+        <style>
+            body {
+                background: #f8f9fa;
+            }
+            .hero {
+                padding: 3rem 1rem;
+                background: #0d6efd;
+                color: white;
+                border-radius: .5rem;
+                margin-bottom: 2rem;
+            }
+            .card {
+                margin-bottom: 1.5rem;
+            }
+        </style>
+    </head>
 
-            <p>
-                &nbsp;&nbsp;This homepage page is served from the Python web server.<br/>
-                &nbsp;&nbsp;It also has a path to see current status: "/status"<br/>
-                &nbsp;&nbsp;It also has a path to get weather: "/weather"
+    <body class="container py-4">
+
+        <div class="hero text-center">
+            <h1 class="display-5 fw-bold">Flask Web Server on Google Cloud Run</h1>
+            <p class="lead">
+                This service is deployed using Cloud Run and built automatically from GitHub.
             </p>
+        </div>
 
-            <ul>
-                <li>Github Repo:
-                    <a href="https://github.com/wizzard262/python-server-rhys">
-                        https://github.com/wizzard262/python-server-rhys
-                    </a>
-                </li>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Useful Links</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <a href="https://github.com/wizzard262/python-server-rhys" target="_blank">
+                                    GitHub Repository
+                                </a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="https://github.com/wizzard262/python-server-rhys/blob/main/README.md"
+                                   target="_blank">
+                                    GitHub README (Setup)
+                                </a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="https://console.cloud.google.com/run/detail/europe-west1/python-server-rhys-git/revisions?project=my-project-1491071384075"
+                                   target="_blank">
+                                    Cloud Run Console (Service)
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
 
-                <li>Github Repo README (setup):
-                    <a href="https://github.com/wizzard262/python-server-rhys/blob/main/README.md">
-                        https://github.com/wizzard262/python-server-rhys/blob/main/README.md
-                    </a>
-                </li>
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">API Endpoints</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <a href="/">/</a> — Homepage
+                            </li>
+                            <li class="list-group-item">
+                                <a href="/status">/status</a> — JSON status
+                            </li>
+                            <li class="list-group-item">
+                                <a href="/weather?lat=53.24&lon=2.09">
+                                    /weather?lat=53.24&lon=2.09
+                                </a>
+                                — Weather (Stockport, UK)
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
-                <li>Console Service URL:
-                    <a href="https://console.cloud.google.com/run/detail/europe-west1/python-server-rhys-git/revisions?project=my-project-1491071384075">
-                        https://console.cloud.google.com/run/detail/europe-west1/python-server-rhys-git/revisions?project=my-project-1491071384075
-                    </a>
-                </li>
-            </ul>
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">About This Service</h5>
+                        <p>
+                            This Flask application exposes a simple homepage, a status endpoint,
+                            and a weather endpoint powered by the Open‑Meteo API.
+                        </p>
+                        <p>
+                            The service is built using Google Cloud Build and deployed automatically
+                            to Cloud Run on every push to the <strong>main</strong> branch.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            <h3>PATHS:</h3>
-            <ul>
-                <li><a href="/">/</a> – (this HTML page)</li>
-                <li><a href="/status">/status</a> – JSON status endpoint</li>
-                <li>
-                    <a href="/weather?lat=53.24&lon=2.09">
-                        /weather?lat=53.24&lon=2.09
-                    </a>
-                    – JSON weather endpoint (Stockport, UK)<br/>
-                    (calls Open Meteo API:
-                    https://api.open-meteo.com/v1/forecast?current_weather=true&latitude=53.24&longitude=2.09)
-                </li>
-            </ul>
-        </body>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
     </html>
     """
 

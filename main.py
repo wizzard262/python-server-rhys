@@ -67,8 +67,8 @@ def home():
                 </li>
 
                 <li>Console Service URL:
-                    <a href="https://console.cloud.google.com/run/detail/europe-west1/python-server-rhys/observability/metrics?project=my-project-1491071384075">
-                        https://console.cloud.google.com/run/detail/europe-west1/python-server-rhys/observability/metrics?project=my-project-1491071384075
+                    <a href="https://console.cloud.google.com/run/detail/europe-west1/python-server-rhys-git/revisions?project=my-project-1491071384075">
+                        https://console.cloud.google.com/run/detail/europe-west1/python-server-rhys-git/revisions?project=my-project-1491071384075
                     </a>
                 </li>
             </ul>

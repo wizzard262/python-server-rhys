@@ -107,6 +107,11 @@ def home():
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">API Endpoints</h5>
+                        <p>
+                            Simple Flask endpoints served by this Cloud Run service. The homepage is HTML,
+                            while the status and weather endpoints return JSON, with the weather fetched
+                            live from the Open‑Meteo API for the given latitude and longitude.
+                        </p>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
                                 <a href="/">/</a> — Homepage

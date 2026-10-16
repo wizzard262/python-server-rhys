@@ -286,7 +286,7 @@ def pyching():
             <div class="wrap">
                 <a href="/">Back to the home page</a> &middot;
                 <a href="/claude-iching">Claude version</a> &middot;
-                <a href="https://github.com/wizzard262/phython-server-rhys">Code on GitHub</a>
+                <a href="https://github.com/wizzard262/python-server-rhys">Code on GitHub</a>
             </div>
         </footer>
     </body>

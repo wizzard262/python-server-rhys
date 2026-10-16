@@ -202,39 +202,20 @@ def toss_to_querystring(request):
     qs += f"&line{len(lines)+1}={new_line}"
     return qs
 
-#================== HTML LINE RENDERER (FIXED WIDTH BARS + LABELS TO RIGHT + NUMBERS LEFT) ===================
+#================== HTML LINE RENDERER (TOP LINE FIRST, POSITION ON THE LEFT, NAME ON THE RIGHT) ===================
 def render_html_lines(display_lines):
+    # display_lines is top line first; the bottom line is line 1
     html = ""
-    # enumerate gives us the throw order (1–6)
-    for idx, l in enumerate(display_lines, start=1):
-        if "yin" in l:
-            # Broken line (two halves with a gap)
-            html += f"""
-            <div style="display:flex; align-items:center; margin:8px auto; width:360px;">
-                <!-- Throw number -->
-                <div style="width:30px; text-align:right; margin-right:8px; font-size:0.9rem; color:#333;">{idx}</div>
-                <!-- Line bar -->
-                <div style="display:flex; justify-content:space-between; width:200px;">
-                    <div style="width:90px; height:20px; background:#000;"></div>
-                    <div style="width:20px;"></div>
-                    <div style="width:90px; height:20px; background:#000;"></div>
-                </div>
-                <!-- Label -->
-                <div style="margin-left:12px; font-size:0.9rem; color:#333;">{l}</div>
-            </div>
-            """
-        else:
-            # Solid line
-            html += f"""
-            <div style="display:flex; align-items:center; margin:8px auto; width:360px;">
-                <!-- Throw number -->
-                <div style="width:30px; text-align:right; margin-right:8px; font-size:0.9rem; color:#333;">{idx}</div>
-                <!-- Line bar -->
-                <div style="width:200px; height:20px; background:#000;"></div>
-                <!-- Label -->
-                <div style="margin-left:12px; font-size:0.9rem; color:#333;">{l}</div>
-            </div>
-            """
+    for idx, l in enumerate(display_lines):
+        position = len(display_lines) - idx
+        bar = "yin" if "yin" in l else "yang"
+        changing = " changing" if l.startswith("old-") else ""
+        html += f"""
+            <div class="hx-row">
+                <div class="hx-pos">{position}</div>
+                <div class="hx-bar {bar}{changing}"></div>
+                <div class="hx-label">{l.replace("-", " ")}</div>
+            </div>"""
     return html
 
 #================== ICHING (COPILOT) ===================================
@@ -259,38 +240,55 @@ def pyching():
     hex_html = ""
     if result["complete"]:
         hex_html = f"""
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <h5 class="card-title">
-                    Hexagram: {result['hexagram_number']}. {result['hexagram_name']}
-                </h5>
-                <p>{result['hexagram_desc']}</p>
-            </div>
-        </div>
+        <section class="card card-wide">
+            <div class="kicker">Your hexagram</div>
+            <h2>{result['hexagram_number']}. {result['hexagram_name']}</h2>
+            <p>{result['hexagram_desc']}</p>
+        </section>
         """
 
     throw_button = ""
     if not result["complete"]:
         qs = "&".join([f"line{i+1}={lines[i]}" for i in range(len(lines))])
-        throw_button = f"""
-        <a class='btn btn-primary btn-lg'
-           href='/pyching?throw=1&{qs}'>
-           Throw Coins
-        </a>
-        """
+        throw_button = f"""<a class="button" href="/pyching?throw=1&{qs}">Throw coins ({len(lines) + 1} of 6)</a>"""
 
-    return f"""
-    <html>
+    empty = "" if lines else '<p class="muted center">No lines yet: press Throw coins.</p>'
+
+    return f"""<!DOCTYPE html>
+    <html lang="en">
     <head>
-        <link rel="stylesheet"
-              href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="color-scheme" content="light dark">
+        <title>I Ching – Copilot</title>
+        <link rel="stylesheet" href="{url_for('static', filename='site.css')}">
     </head>
-    <body class="container py-4">
-        <h1 class="mb-4">I Ching – Three Coin Method</h1>
-        {html_lines}
-        {hex_html}
-        {throw_button}
-        <a class="btn btn-secondary mt-3" href="/pyching_reset">Reset</a>
+    <body>
+        <header class="hero">
+            <div class="wrap">
+                <p class="eyebrow"><a href="/">Home</a> &middot; I Ching &middot; Copilot version</p>
+                <h1>Three coin method</h1>
+                <p class="lead">The original version: each throw reloads the page and adds a line from the bottom up.
+                    Red lines are changing lines.</p>
+            </div>
+        </header>
+        <main class="wrap grid">
+            <section class="card card-wide" aria-label="Your throws">
+                <div class="board">{html_lines}{empty}</div>
+                <div class="actions">
+                    {throw_button}
+                    <a class="button button-ghost" href="/pyching_reset">Reset</a>
+                </div>
+            </section>
+            {hex_html}
+        </main>
+        <footer class="footer">
+            <div class="wrap">
+                <a href="/">Back to the home page</a> &middot;
+                <a href="/claude-iching">Claude version</a> &middot;
+                <a href="https://github.com/wizzard262/phython-server-rhys">Code on GitHub</a>
+            </div>
+        </footer>
     </body>
     </html>
     """

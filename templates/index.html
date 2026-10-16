@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>Python Flask on Cloud Run: I Ching and weather</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='site.css') }}">
+</head>
+<body>
+    <header class="hero">
+        <div class="wrap">
+            <p class="eyebrow">Python &middot; Flask &middot; Google Cloud Run &middot; AI-built pages</p>
+            <h1>I Ching and weather on Flask</h1>
+            <p class="lead">A Flask web server on Google Cloud Run with an I Ching hexagram generator built two ways,
+                by GitHub Copilot and by Claude, plus JSON status and weather endpoints.</p>
+            <div class="hero-actions">
+                <a class="button" href="/claude-iching">Cast a hexagram</a>
+                <a class="button button-ghost" href="https://github.com/wizzard262/phython-server-rhys">View the code</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="wrap grid">
+        <section class="card card-wide" aria-labelledby="iching-title">
+            <h2 id="iching-title">I Ching hexagram generator</h2>
+            <p>The traditional three-coin method: throw three coins six times to build a six-line hexagram from the bottom up,
+                then read which of the 64 classic hexagrams it is. Two versions to compare:</p>
+            <ul class="endpoints">
+                <li>
+                    <a href="/claude-iching"><b>Claude version</b></a>
+                    <span>Six empty lines; each throw shows its three coins and draws its line straight away.
+                        Changing lines turn red, and the result shows the hexagram it changes to, with read-aloud.
+                        <code>/claude-iching</code></span>
+                </li>
+                <li>
+                    <a href="/pyching"><b>Copilot version</b></a>
+                    <span>The original: one throw per page load, then the resulting hexagram. <code>/pyching</code></span>
+                </li>
+            </ul>
+            <details>
+                <summary>Show the prompt used to build the Claude version</summary>
+                <p class="muted small">Built by Claude Code (Opus 5.5) from this prompt, reusing the existing Python I Ching functions and 64-hexagram data:</p>
+                <pre>see in this folder : C:\DEV\Repositories\GitHub\phython-server-rhys
+I have a basic python flask app i have it hosted on google cloud run serverless.
+All is in main.py. its has a basic couple of pages (endpoints) plus it embeds a python iching page  and functions.
+
+1. remove the existing iching to its own page to seaprate code form te simple endpoints
+
+2. the iching i know you can do better
+(I want it to show the 6 empty lines, and a button, as you clickc the button six times it show the coins thrown next to each line (3 coins heads or tails)  and when all are thrown its show the iching patter with red lines indicating chnge, its showe the chaning iching to and reads the text for the correct symbol.
+Reuse the existing functions (def: whatever) and iching 64 description data, etc
+
+then link to coth ichings for mthe home page, old one cvalled copilot, new one called Claude
+
+embed this prompt message into a collapsed div under the new claudes homepage link stating what it is</pre>
+                <p class="muted small">Follow-up prompt:</p>
+                <pre>that is good, show each line  as soon as we generate it, do not wait untl the end</pre>
+            </details>
+        </section>
+
+        <section class="card card-wide" aria-labelledby="weather-title">
+            <h2 id="weather-title">Try the weather endpoint</h2>
+            <p class="muted">Calls this server's <a href="/weather?lat=53.41&amp;lon=-2.15"><code>/weather?lat=53.41&amp;lon=-2.15</code></a>,
+                which asks Open-Meteo for the current weather and adds a plain-English description.</p>
+
+            <div class="presets" role="group" aria-label="Places">
+                <button type="button" class="chip" data-lat="53.41" data-lon="-2.15">Stockport</button>
+                <button type="button" class="chip" data-lat="53.48" data-lon="-2.24">Manchester</button>
+                <button type="button" class="chip" data-lat="51.51" data-lon="-0.13">London</button>
+                <button type="button" class="chip" data-lat="40.71" data-lon="-74.01">New York</button>
+                <button type="button" class="chip" data-lat="-37.81" data-lon="144.96">Melbourne</button>
+            </div>
+
+            <form id="weather-form" class="form-row">
+                <label>Latitude <input id="lat" name="lat" inputmode="decimal" value="53.41" required></label>
+                <label>Longitude <input id="lon" name="lon" inputmode="decimal" value="-2.15" required></label>
+                <button type="submit" class="button">Get weather</button>
+            </form>
+
+            <div id="weather-now" class="weather-now" hidden aria-live="polite"></div>
+            <pre id="weather-result" class="result" aria-live="polite">Pick a place or enter coordinates, then press Get weather.</pre>
+        </section>
+
+        <section class="card" aria-labelledby="endpoints-title">
+            <h2 id="endpoints-title">Endpoints</h2>
+            <ul class="endpoints">
+                <li><a href="/"><code>/</code></a><span>This page (HTML)</span></li>
+                <li><a href="/status"><code>/status</code></a><span><span id="status-dot" class="status-dot"></span><span id="status-text">JSON status: checking&hellip;</span></span></li>
+                <li><a href="/weather?lat=53.41&amp;lon=-2.15"><code>/weather</code></a><span>JSON weather for <code>lat</code> and <code>lon</code></span></li>
+                <li><a href="/claude-iching/throw"><code>/claude-iching/throw</code></a><span>JSON: one throw of three coins</span></li>
+            </ul>
+        </section>
+
+        <section class="card" aria-labelledby="deploy-title">
+            <h2 id="deploy-title">How it's built and run</h2>
+            <ul>
+                <li><b>Flask</b>: <code>main.py</code> holds the home page, status and weather; the I Ching pages are a separate blueprint in <code>iching.py</code>.</li>
+                <li>Built from source with Google's <b>buildpacks</b> (no Dockerfile) and deployed to <b>Cloud Run</b> in <code>europe-west1</code>.</li>
+                <li>Cloud Run starts copies of the server only when requests arrive, capped at 2.</li>
+                <li><a href="https://console.cloud.google.com/run/detail/europe-west1/python-server-rhys-git/revisions?project=my-project-1491071384075">Cloud Run console</a> (owner sign-in)</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="wrap">
+            Python server RHYS by Steve Jones &middot;
+            <a href="https://github.com/wizzard262/phython-server-rhys">Code on GitHub</a> &middot;
+            <a href="https://www.harriercarrier.com/portfolio.html">Portfolio</a>
+        </div>
+    </footer>
+
+    <script>
+        const form = document.getElementById("weather-form");
+        const lat = document.getElementById("lat");
+        const lon = document.getElementById("lon");
+        const out = document.getElementById("weather-result");
+        const now = document.getElementById("weather-now");
+
+        document.querySelectorAll(".presets .chip").forEach(chip => chip.addEventListener("click", () => {
+            lat.value = chip.dataset.lat;
+            lon.value = chip.dataset.lon;
+            form.requestSubmit();
+        }));
+
+        form.addEventListener("submit", async e => {
+            e.preventDefault();
+            out.textContent = "Loading…";
+            now.hidden = true;
+            try {
+                const res = await fetch(`/weather?lat=${encodeURIComponent(lat.value)}&lon=${encodeURIComponent(lon.value)}`);
+                const data = await res.json();
+                out.textContent = JSON.stringify(data, null, 2);
+                if (res.ok) {
+                    now.innerHTML = `<span class="temp">${data.temperature}&deg;C</span>`
+                        + `<span>${data.weather_description ?? ""}</span>`
+                        + `<span class="muted small">wind ${data.windspeed} km/h &middot; ${data.time} UTC</span>`;
+                    now.hidden = false;
+                }
+            } catch (err) {
+                out.textContent = "Request failed: " + err.message;
+            }
+        });
+
+        // Show whether /status answers
+        fetch("/status").then(r => r.json()).then(s => {
+            document.getElementById("status-dot").classList.add(s.status === "ok" ? "ok" : "bad");
+            document.getElementById("status-text").textContent = `JSON status: ${s.status} at ${s.time}`;
+        }).catch(() => {
+            document.getElementById("status-dot").classList.add("bad");
+            document.getElementById("status-text").textContent = "JSON status: not answering";
+        });
+    </script>
+</body>
+</html>
